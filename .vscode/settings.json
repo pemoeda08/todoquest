@@ -1,0 +1,13 @@
+{
+    "sqltools.connections": [
+        {
+            "askForPassword": false,
+            "database": "todoquest_role",
+            "dialect": "PostgreSQL",
+            "name": "localhost",
+            "port": 5432,
+            "server": "localhost",
+            "username": "todoquest_role"
+        }
+    ]
+}
