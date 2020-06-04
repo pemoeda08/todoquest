@@ -4,7 +4,8 @@ const prefix = "http://localhost:5000/users";
 
 export const ApiPaths = {
     Login: `${prefix}/authenticate`,
-    Register: `${prefix}/register`
+    Register: `${prefix}/register`,
+    TestToken: `${prefix}/test`
 }
 
 export class UserAuthenticator {
@@ -16,7 +17,7 @@ export class UserAuthenticator {
     _accessToken = null;
 
     constructor() {
-        const storedUser = JSON.parse(localStorage.getItem("user"));
+        const storedUser = JSON.parse(localStorage.getItem("user") || "null");
         const storedToken = localStorage.getItem("storedToken");
         this._user = !storedUser ? null : new User(storedUser);
         this._accessToken = storedToken;
@@ -46,6 +47,19 @@ export class UserAuthenticator {
         this._user = new User(data.result);
         this._accessToken = data["access_token"];
         this.saveUserToStorage();
+        // this._subscriber.forEach(async fn => await fn());
+    }
+
+    logout() {
+        this.clearUserCache();
+        window.location.reload(true);
+    }
+
+    clearUserCache() {
+        this._accessToken = null;
+        this._user = null;
+        localStorage.setItem("user", null);
+        localStorage.setItem("storedToken", null);
     }
 
     async register({ username, password, email = null }) {
@@ -64,26 +78,19 @@ export class UserAuthenticator {
     }
 
     async ensureTokenValidity() {
-        try {
-            const response = await fetch(prefix, {
-                headers: !this._accessToken ? {} : { "Authorization": `Bearer ${this._accessToken}` }
-            });
-            if (response.status === 401) {
-                this._accessToken = null;
-                this._user = null;
-                localStorage.setItem("user", null);
-                localStorage.setItem("storedToken", null);
-            }
-        } catch (e) {
-            this._accessToken = null;
-            this._user = null;
-            localStorage.setItem("user", null);
-            localStorage.setItem("storedToken", null);
+        const response = await fetch(`${prefix}`, {
+            method: "GET",
+            headers: !this._accessToken ? {} : { "Authorization": `Bearer ${this._accessToken}` }
+        });
+        const data = await response.json();
+        if (!data.status) {
+            this.clearUserCache();
         }
     }
 
-    async isAuthenticated() {
-        return this._user && this._accessToken;
+    async checkAuthentication() {
+        await this.ensureTokenValidity();
+        return this._accessToken && this._user;
     }
 
 }

@@ -64,6 +64,25 @@ class QuestApi extends RequestApi {
         }
     }
 
+    async joinQuest(body) {
+        try {
+            const response = await this.makeRequest(`${prefix}/join`, {
+                method: "POST",
+                body: body
+            });
+
+            if (!response.ok)
+                throw new Error(`${response.status} : ${response.statusText}`);
+            const data = await response.json();
+            if (!data.status)
+                throw new Error(data.message);
+                
+            return data.message;
+        } catch(e) {
+            throw e;
+        }
+    }
+
     async postNewQuest(newQuest) {
         try {
             const response = await this.makeRequest(prefix, {

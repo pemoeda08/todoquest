@@ -28,13 +28,17 @@ class PostQuestModal extends React.Component {
         const formData = new FormData(form);
         const questTitle = formData.get("title");
         const questDescription = formData.get("description");
-
+        const questKey = formData.get("quest_key");
         if (questTitle.length > 100) {
             alert("Title cannot be longer than 100");
             return;
         }
         if (questDescription.length > 200) {
             alert("Description cannot be longer than 200");
+            return;
+        }
+        if (questKey.length === 0) {
+            alert("Quest key cannot be empty");
             return;
         }
         const keys = [...formData.keys()]
@@ -55,6 +59,7 @@ class PostQuestModal extends React.Component {
                 this.setState({
                     isDisabled: false
                 });
+                alert(res);
             })
             .catch(err => {
                 console.error(err);
@@ -66,7 +71,7 @@ class PostQuestModal extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className="col push-s3">
                 <div className="modal" id="modal1" ref={(modal) => this.modal = modal}>
                     <div className="modal-content">
                         <form onSubmit={(e) => {
@@ -80,13 +85,17 @@ class PostQuestModal extends React.Component {
                                         ref={(txt) => { this.txtQuestTitle = txt }} />
                                     <label htmlFor="txtQuestTitle">Quest Title</label>
                                 </div>
-                            </div>
-                            <div className="row">
                                 <div className="input-field col s12">
                                     <input type="text" id="txtQuestDescription" name="description"
                                         ref={(txt) => { this.txtQuestDescription = txt }}
                                     />
                                     <label htmlFor="txtQuestDescription">Quest Description</label>
+                                </div>
+                                <div className="input-field col s12">
+                                    <input type="text" name="quest_key" id="txtQuestKey"
+                                        ref={(txt) => { this.txtQuestKey = txt}}
+                                    />
+                                    <label htmlFor="txtQuestKey">Quest Key (people will use this to join)</label>
                                 </div>
                             </div>
                             <div className="row center-align">
@@ -99,21 +108,17 @@ class PostQuestModal extends React.Component {
                         </form>
                     </div>
                 </div>
-                <div className="card" style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: "320px",
-                    height: "80%",
-                }}>
-                    <div className="card-content amber-text text-darken-4 modal-trigger" style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        cursor: "pointer"
-                    }} onClick={() => { this.setState({ openPostQuestDialog: true }) }} href="#modal1">
-                        <i className="material-icons">add</i>
-                        <span>Post New Quest</span>
+                <div className="col push-s4">
+                    <div className="card">
+                        <div className="card-content amber-text text-darken-4 modal-trigger" style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            cursor: "pointer"
+                        }} onClick={() => { this.setState({ openPostQuestDialog: true }) }} href="#modal1">
+                            <i className="material-icons">add</i>
+                            <span>Post New Quest</span>
+                        </div>
                     </div>
                 </div>
             </div>

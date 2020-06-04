@@ -2,14 +2,7 @@ import { userAuthenticator as auther } from "../auth/UserAuthenticator";
 
 export default class RequestApi {
 
-    constructor() {
-        if (!auther._user || !auther._accessToken)
-            throw new Error("User has ne been authenticated");
-        this._token = auther._accessToken;
-    }
-
     /**
-     * 
      * @param { string } url 
      * @param {*} param1 
      */
@@ -20,7 +13,7 @@ export default class RequestApi {
         return fetch(url, {
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${this._token}`
+                "Authorization": `Bearer ${auther._accessToken}`
             },
             method: method,
             body: ["GET", "HEAD"].some(x => x === method) ? null : body

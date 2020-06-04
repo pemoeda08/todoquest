@@ -1,5 +1,4 @@
 import React from "react";
-import { Redirect } from "react-router-dom";
 import M from "materialize-css";
 import { userAuthenticator } from "./components/auth/UserAuthenticator";
 import "materialize-css/dist/css/materialize.css";
@@ -11,11 +10,9 @@ class Auth extends React.Component {
         this.state = {
             status: false,
             message: null,
-            shouldRedirect: false,
+            authenticated: false,
             active: true
         };
-        this.redirectDelay = 1200;
-        console.log(userAuthenticator._user);
     }
 
     componentDidMount() {
@@ -36,11 +33,9 @@ class Auth extends React.Component {
         if (authType === "login")
             userAuthenticator.login(identity)
                 .then((status) => {
-                    this.setState({
-                        status: true,
-                        message: "Authentication success",
-                        active: false
-                    });
+                    if (this.props.onAuthenticated)
+                        this.props.onAuthenticated();
+                    //Return to App.js
                 })
                 .catch(err => {
                     console.error(err);
@@ -56,7 +51,7 @@ class Auth extends React.Component {
                     this.setState({
                         status: true,
                         message: "Registration success",
-                        active: false
+                        active: true
                     });
                 })
                 .catch(err => {
@@ -70,14 +65,8 @@ class Auth extends React.Component {
     }
 
     render() {
-        if (userAuthenticator.isAuthenticated()) {
-            return <Redirect to="/"/>
-        }
         const message = this.state.message || "";
         const messageColor = this.state.status ? "green-text" : "red-text";
-        if (this.state.shouldRedirect) {
-            return <Redirect to="/" />
-        }
         return (
             <div style={{
                 height: "100%",

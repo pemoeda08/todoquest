@@ -4,6 +4,7 @@ import "materialize-css/dist/css/materialize.css";
 import "./QuestDetail.css"
 import api from "./quest-api/QuestApi";
 import { Link, Redirect } from "react-router-dom";
+import { userAuthenticator as auther } from "./auth/UserAuthenticator";
 
 function Comment({ commentator, comment_datetime, text }) {
     return (
@@ -40,6 +41,24 @@ function PartyMember({ username, date_joined }) {
     );
 }
 
+function Button({ onClick }) {
+    return (
+        <button
+            className="btn btn-small red white-text"
+            onClick={(e) => {
+                e.preventDefault();
+                if (typeof onClick == 'function')
+                    onClick(e);
+            }}
+        >
+            <i className="material-icons left">delete</i>
+            <span>
+                {"DELETE QUEST"}
+            </span>
+        </button>
+    );
+}
+
 class QuestDetail extends React.Component {
 
     constructor(props) {
@@ -68,6 +87,7 @@ class QuestDetail extends React.Component {
 
     async fetchQuestInfo() {
         const data = await api.fetchQuest(this.state.id);
+        console.log(data);
         this.setState({
             quest_info: data
         });
@@ -128,6 +148,14 @@ class QuestDetail extends React.Component {
                 <p>{this.state.quest_info.description}</p>
             </div>
         );
+        const buttonDeleteQuest = (() => {
+            const quest_info = this.state.quest_info;
+            if (!quest_info) return null;
+            return auther._user.userId === this.state.quest_info.client_id ?
+            <div className="col push-s10">
+                <Button onClick={() => this.deleteQuest()} />
+            </div> : null;
+        })();
 
         const disabled = !this.state.quest_info;
         const comments = this.state.comments.length !== 0 ?
@@ -179,7 +207,7 @@ class QuestDetail extends React.Component {
                         <div className="card">
                             <div className="card-content">
                                 <div className="row">
-                                    <div className="row valign-wrapper">
+                                    <div className="col s12 row valign-wrapper">
                                         <div className="s1 col">
                                             <Link to={`/`}>
                                                 <button type="button"
@@ -194,18 +222,7 @@ class QuestDetail extends React.Component {
                                             {quest_info}
                                         </div>
                                     </div>
-                                    <div className="col s12 right-align">
-                                        <button
-                                            className="btn btn-small red white-text"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                this.deleteQuest();
-                                            }}
-                                        >
-                                            <i className="material-icons left">delete</i>
-                                            DELETE QUEST
-                                        </button>
-                                    </div>
+                                    { buttonDeleteQuest }
                                 </div>
                             </div>
                             <div className="card-tabs">
