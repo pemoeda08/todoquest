@@ -71,7 +71,7 @@ class PostQuestModal extends React.Component {
 
     render() {
         return (
-            <div className="col push-s3">
+            <div>
                 <div className="modal" id="modal1" ref={(modal) => this.modal = modal}>
                     <div className="modal-content">
                         <form onSubmit={(e) => {

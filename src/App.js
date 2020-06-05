@@ -88,20 +88,40 @@ class App extends React.Component {
                         height: "100%",
                         display: "flex",
                         flexDirection: "column",
-                        justifyContent: "center",
-                        alignItems: "center"
+                        justifyContent: "space-evenly",
+                        alignItems: "stretch"
                     }}>
-                        <QuestboardCarousel quest_list={this.state.quest_list}
-                            onMounted={() => this.refreshQuestboard()} />
-                        <div style={{ width: "100%" }}>
-                            <div className="row" style={{
-                                width: "100%"
-                            }}>
-                                <PostQuestModal onPosted={() => this.refreshQuestboard()} />
-                                <JoinQuestModal />
+                        <div className="row valign-wrapper" style={{ width: "100%" }}>
+                            <div className="col push-s9">
+                                <div className="card">
+                                    <div className="card-content valign-wrapper" style={{ height: "60px" }}>
+                                        <p>
+                                            {`Logged in as `}
+                                            <span className="amber-text text-darken-4 bold"
+                                                style={{ fontWeight: "bolder" }}>
+                                                {`${userAuthenticator._user.username}`}
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col push-s9">
                                 <LogoutModal />
                             </div>
                         </div>
+                        <QuestboardCarousel quest_list={this.state.quest_list}
+                            onMounted={() => this.refreshQuestboard()} />
+                        <div style={{ width: "100%" }}>
+                            <div className="row valign-wrapper" style={{ width: "100%" }}>
+                                <div className="col push-s4">
+                                    <PostQuestModal onPosted={() => this.refreshQuestboard()} />
+                                </div>
+                                <div className="col push-s4">
+                                    <JoinQuestModal onQuestJoined={() => this.refreshQuestboard()} />
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </Route>
                 <Route path="/quest/:id" component={QuestDetail} />

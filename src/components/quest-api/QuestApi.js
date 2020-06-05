@@ -115,6 +115,20 @@ class QuestApi extends RequestApi {
         }
     }
 
+    async leaveQuest(id) {
+        try {
+            const response = await this.makeRequest(`${prefix}/${id}/leave`, { method: "POST"});
+            if (!response.ok)
+                throw new Error(`${response.status} : ${response.statusText}`);
+            const data = await response.json();
+            if (!data.status)
+                throw new Error(data.message);
+            return data.message;
+        } catch(e) {
+            throw e;
+        }
+    }
+
     async fetchQuestComments(questId) {
         try {
             const response = await this.makeRequest(`${prefix}/${questId}/comments`, { method: "GET" });

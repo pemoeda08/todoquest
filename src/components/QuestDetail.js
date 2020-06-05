@@ -41,7 +41,7 @@ function PartyMember({ username, date_joined }) {
     );
 }
 
-function Button({ onClick }) {
+function Button({ onClick, text, materialIcon }) {
     return (
         <button
             className="btn btn-small red white-text"
@@ -51,9 +51,10 @@ function Button({ onClick }) {
                     onClick(e);
             }}
         >
-            <i className="material-icons left">delete</i>
+            {materialIcon ?
+                <i className="material-icons left">{`${materialIcon}`}</i> : null}
             <span>
-                {"DELETE QUEST"}
+                {`${text}`}
             </span>
         </button>
     );
@@ -87,7 +88,6 @@ class QuestDetail extends React.Component {
 
     async fetchQuestInfo() {
         const data = await api.fetchQuest(this.state.id);
-        console.log(data);
         this.setState({
             quest_info: data
         });
@@ -136,6 +136,22 @@ class QuestDetail extends React.Component {
             });
     }
 
+    async leaveQuest() {
+        const confirm = window.confirm("Are you sure?");
+        if (!confirm) return;
+        try {
+            const result = await api.leaveQuest(this.state.id);
+            alert(result);
+            this.setState({
+                id: null
+            });
+        } catch(e) {
+            const message = e.message;
+            alert(message);
+        }
+        
+    }
+
     render() {
         if (!this.state.id) {
             return <Redirect to={"/"} />
@@ -151,10 +167,12 @@ class QuestDetail extends React.Component {
         const buttonDeleteQuest = (() => {
             const quest_info = this.state.quest_info;
             if (!quest_info) return null;
-            return auther._user.userId === this.state.quest_info.client_id ?
-            <div className="col push-s10">
-                <Button onClick={() => this.deleteQuest()} />
-            </div> : null;
+            return (
+                <div className="col push-s10">
+                    {auther._user.userId === this.state.quest_info.client_id ?
+                    <Button onClick={() => this.deleteQuest()} text={"DELETE QUEST"} materialIcon={"delete"}/> 
+                    : <Button onClick={() => this.leaveQuest()} text={"LEAVE QUEST"} materialIcon={"meeting_room"}/>}
+                </div>);
         })();
 
         const disabled = !this.state.quest_info;
@@ -222,7 +240,7 @@ class QuestDetail extends React.Component {
                                             {quest_info}
                                         </div>
                                     </div>
-                                    { buttonDeleteQuest }
+                                    {buttonDeleteQuest}
                                 </div>
                             </div>
                             <div className="card-tabs">

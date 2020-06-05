@@ -19,7 +19,7 @@ class QuestboardCarousel extends React.Component {
     }
 
     render() {
-        let quest_list = this.props.quest_list.map(quest =>
+        let quest_list = this.props.quest_list.map((quest) =>
             <div className="carousel-item" key={quest.quest_id}>
                 <QuestCard title={quest.title}
                     description={quest.description}

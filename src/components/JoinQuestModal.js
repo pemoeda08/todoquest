@@ -1,6 +1,5 @@
 import React from "react";
 import M from "materialize-css";
-import { userAuthenticator as auther } from "./auth/UserAuthenticator";
 import questApi from "./quest-api/QuestApi";
 
 class JoinQuestModal extends React.Component {
@@ -24,11 +23,11 @@ class JoinQuestModal extends React.Component {
         }
     }
 
-    joinQuest(form) {
+    async joinQuest(form) {
         const formData = new FormData(form);
         const questKey = formData.get("quest_key");
 
-        if (questKey.length == 0) {
+        if (questKey.length === 0) {
             alert("Quest key cannot be empty");
             return;
         }
@@ -42,28 +41,32 @@ class JoinQuestModal extends React.Component {
         this.setState({
             isDisabled: true
         });
-        questApi.joinQuest(body)
-            .then(res => {
-                this.modalInstance.close();
-                form.reset();
-                this.setState({
-                    isDisabled: false
-                });
-                alert(res);
-            })
-            .catch(err => {
-                console.error(err);
-                this.setState({
-                    isDisabled: false
-                })
+
+        try {
+            await questApi.joinQuest(body);
+            this.modalInstance.close();
+            if (this.props.onQuestJoined) {
+                this.props.onQuestJoined();
+            }
+        } catch (err) {
+            this.setState({
+                isDisabled: false,
+                errorMessage: err.message
             });
+        }
+
     }
 
     render() {
         return (
-            <div className="col push-s3">
-                <div className="modal" id="modal2" ref={(modal) => this.modal = modal}>
+            <div>
+                <div className="modal" id="modalJoinQuest" ref={(modal) => this.modal = modal}>
                     <div className="modal-content">
+                        <div className="row">
+                            <div className="col s12 red-text center-align">
+                                <span>{`${this.state.errorMessage || ""}`}</span>
+                            </div>
+                        </div>
                         <form onSubmit={(e) => {
                             e.preventDefault();
                             this.joinQuest(e.target);
@@ -101,7 +104,7 @@ class JoinQuestModal extends React.Component {
                                 height: "80%",
                             }}
                             onClick={() => { }}
-                            href="#modal2">
+                            href="#modalJoinQuest">
                             <i className="material-icons">people</i>
                             <span>Join Quest</span>
                         </div>

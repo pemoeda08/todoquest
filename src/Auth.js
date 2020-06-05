@@ -32,41 +32,43 @@ class Auth extends React.Component {
         }, {});
         if (authType === "login")
             userAuthenticator.login(identity)
-                .then((status) => {
+                .then((message) => {
+                    M.toast({ html: message, displayLength: 1500 });
+                    //Return to App.js
                     if (this.props.onAuthenticated)
                         this.props.onAuthenticated();
-                    //Return to App.js
                 })
                 .catch(err => {
-                    console.error(err);
+                    const message = err.message;
+                    M.toast({ html: `${message}`, displayLength: 1500 });
                     this.setState({
                         status: false,
-                        message: "Failed to login",
+                        message: message,
                         active: true
                     });
                 })
         if (authType === "register")
             userAuthenticator.register(identity)
-                .then((status) => {
+                .then((message) => {
+                    M.toast({ html: message, displayLength: 1500 });
                     this.setState({
                         status: true,
-                        message: "Registration success",
+                        message: message,
                         active: true
                     });
                 })
                 .catch(err => {
-                    console.error(err);
+                    const message = err.message;
+                    M.toast({ html: message, displayLength: 1500 });
                     this.setState({
                         status: false,
-                        message: "Registration failed",
+                        message: message,
                         active: true
                     })
                 })
     }
 
     render() {
-        const message = this.state.message || "";
-        const messageColor = this.state.status ? "green-text" : "red-text";
         return (
             <div style={{
                 height: "100%",
@@ -91,13 +93,6 @@ class Auth extends React.Component {
                             </div>
                             <div className="card-content grey lighten-4">
                                 <div id="form__login">
-                                    <div className="row">
-                                        <div className="col s12">
-                                            <p className={`${messageColor} center-align`}>
-                                                {message}
-                                            </p>
-                                        </div>
-                                    </div>
                                     <form onSubmit={(e) => {
                                         e.preventDefault();
                                         this.auth(new FormData(e.target), "login");
@@ -131,13 +126,6 @@ class Auth extends React.Component {
                                         e.preventDefault();
                                         this.auth(new FormData(e.target), "register");
                                     }}>
-                                        <div className="row">
-                                            <div className="col s12">
-                                                <p className={`${messageColor} center-align`}>
-                                                    {message}
-                                                </p>
-                                            </div>
-                                        </div>
                                         <div className="row">
                                             <div className="input-field col s12">
                                                 <input type="text"

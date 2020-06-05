@@ -40,13 +40,18 @@ export class UserAuthenticator {
                 "password": password
             })
         });
-        const data = await response.json();
-        if (!response.status) {
-            throw new Error(data.message);
+        if (!response.ok) {
+            throw new Error(`${response.status} : ${response.statusText}`);
         }
+        const data = await response.json();
+        if (!data.status)
+            throw new Error(data.message);
+
         this._user = new User(data.result);
         this._accessToken = data["access_token"];
         this.saveUserToStorage();
+
+        return data.message;
         // this._subscriber.forEach(async fn => await fn());
     }
 
@@ -73,8 +78,13 @@ export class UserAuthenticator {
                 "password": password
             })
         });
+        if (!response.ok) 
+            throw new Error(`${response.status} : ${response.statusText}`);
+        
         const data = await response.json();
-        if (!response.ok) throw new Error(data.message);
+        if (!data.status)
+            throw new Error(data.message);
+        return data.message;
     }
 
     async ensureTokenValidity() {

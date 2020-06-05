@@ -3,28 +3,22 @@ import { userAuthenticator } from "./auth/UserAuthenticator";
 
 class LogoutModal extends React.Component {
 
+    logout() {
+        const confirm = window.confirm("Are you sure?");
+        if (!confirm) return;
+        userAuthenticator.logout();
+    }
+
     render() {
         return (
-            <div className="col push-s3">
-                <div className="col s12 push-s4">
-                    <div className="card" style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        cursor: "pointer"
-                    }}>
-                        <div className="card-content amber-text text-darken-4 modal-trigger"
-                            style={{
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                height: "80%",
-                            }}
-                            onClick={() => { userAuthenticator.logout(); }}
-                            href="#modal2">
-                            <i className="material-icons">meeting_room</i>
-                            <span>Log out</span>
-                        </div>
+            <div>
+                <div className="card">
+                    <div className="card-content valign-wrapper amber-text text-darken-4 modal-trigger"
+                        style={{ height: "60px", cursor: "pointer"}}
+                        onClick={() => { this.logout() }}
+                        href="#modal2">
+                        <i className="material-icons">meeting_room</i>
+                        <span>Log out</span>
                     </div>
                 </div>
             </div>
