@@ -47,6 +47,20 @@ class QuestApi extends RequestApi {
         }
     }
 
+    async fetchTasks(id) {
+        try {
+            const response = await this.makeRequest(`${prefix}/${id}/tasks`, { method: "GET" });
+            if (!response.ok)
+                throw new Error(`${response.status} : ${response.statusText}`);
+            const data = await response.json();
+            if (!data.status)
+                throw new Error(data.message);
+            return data.result;
+        } catch(e) {
+            throw e;
+        }
+    }
+
     async postNewComment(id, jsonBody) {
         try {
             const response = await this.makeRequest(`${prefix}/${id}/comment`, {
@@ -60,6 +74,23 @@ class QuestApi extends RequestApi {
                 throw new Error(data.message);
             return data.message;
         } catch (e) {
+            throw e;
+        }
+    }
+
+    async postNewTask(id, jsonBody) {
+        try {
+            const response = await this.makeRequest(`${prefix}/${id}/task`, {
+                method: "POST",
+                body: jsonBody
+            });
+            if (!response.ok)
+                throw new Error(`${response.status} : ${response.statusText}`);
+            const data = await response.json();
+            if (!data.status)
+                throw new Error(data.message);
+            return data.message;
+        } catch(e) {
             throw e;
         }
     }
@@ -97,6 +128,48 @@ class QuestApi extends RequestApi {
             
             return data.message;
         } catch (e) {
+            throw e;
+        }
+    }
+
+    async markTaskDone(questId, taskId) {
+        try {
+            const response = await this.makeRequest(`${prefix}/${questId}/task/done/${taskId}`, { method: "POST" });
+            if (!response.ok)
+                throw new Error(`${response.status} : ${response.statusText}`);
+            const data = await response.json();
+            if (!data.status)
+                throw new Error(data.message);
+            return data.message;
+        } catch(e) {
+            throw e;
+        }
+    }
+
+    async markTaskUndone(questId, taskId) {
+        try {
+            const response = await this.makeRequest(`${prefix}/${questId}/task/undone/${taskId}`, { method: "POST" });
+            if (!response.ok)
+                throw new Error(`${response.status} : ${response.statusText}`);
+            const data = await response.json();
+            if (!data.status)
+                throw new Error(data.message);
+            return data.message;
+        } catch(e) {
+            throw e;
+        }
+    }
+
+    async deleteTask(questId, taskId) {
+        try {
+            const response = await this.makeRequest(`${prefix}/${questId}/task/delete/${taskId}`, { method: "POST" });
+            if (!response.ok)
+                throw new Error(`${response.status} : ${response.statusText}`);
+            const data = await response.json();
+            if (!data.status)
+                throw new Error(data.message);
+            return data.message;
+        } catch(e) {
             throw e;
         }
     }

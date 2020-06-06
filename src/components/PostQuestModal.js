@@ -14,7 +14,9 @@ class PostQuestModal extends React.Component {
 
     componentDidMount() {
         this.modalInstance = M.Modal.init(this.modal, {
-
+            onCloseEnd: () => {
+                this.modal.querySelector("form").reset();
+            }
         });
         if (this.props.isOpen) {
             this.modalInstance.open();
@@ -29,16 +31,24 @@ class PostQuestModal extends React.Component {
         const questTitle = formData.get("title");
         const questDescription = formData.get("description");
         const questKey = formData.get("quest_key");
+        if (questTitle.trim().length === 0) {
+            M.toast({ html: "Title cannot be empty", displayLength: 1000 });
+            return;
+        }
         if (questTitle.length > 100) {
-            alert("Title cannot be longer than 100");
+            M.toast({ html: "Title cannot be longer than 100", displayLength: 1000 });
+            return;
+        }
+        if (questDescription.trim().length === 0) {
+            M.toast({ html: "Description cannot be empty", displayLength: 1000 });
             return;
         }
         if (questDescription.length > 200) {
-            alert("Description cannot be longer than 200");
+            M.toast({ html: "Description cannot be longer than 200", displayLength: 1000 });
             return;
         }
         if (questKey.length === 0) {
-            alert("Quest key cannot be empty");
+            M.toast({ html: "Quest key cannot be empty", displayLength: 1000 });
             return;
         }
         const keys = [...formData.keys()]
@@ -62,7 +72,7 @@ class PostQuestModal extends React.Component {
                 alert(res);
             })
             .catch(err => {
-                console.error(err);
+                M.toast({ html: err.message, displayLength: 1200 });
                 this.setState({
                     isDisabled: false
                 })
