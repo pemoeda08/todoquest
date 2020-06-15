@@ -392,7 +392,6 @@ class QuestDetail extends React.Component {
                             </div>
                             <div className="card-tabs">
                                 <ul className="tabs tabs-fixed-width" ref={(tabs) => this.tabs = tabs}>
-                                    <li className={`tab ${disabled ? "disabled" : ""}`}><a href="#tab-activity_log">Activity Log</a></li>
                                     <li className={`tab ${disabled ? "disabled" : ""}`}><a href="#tab-tasks" onClick={() => this.fetchTasks()}>Tasks</a></li>
                                     <li className={`tab ${disabled ? "disabled" : ""}`}><a href="#tab-comments" onClick={() => this.fetchComments()}>Comments</a></li>
                                     <li className={`tab ${disabled ? "disabled" : ""}`}><a href="#tab-party" onClick={() => this.fetchParty()}>Party</a></li>

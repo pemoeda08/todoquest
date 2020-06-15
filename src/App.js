@@ -3,6 +3,7 @@ import { Route } from "react-router-dom";
 import QuestboardCarousel from "./components/QuestboardCarousel";
 import PostQuestModal from "./components/PostQuestModal";
 import JoinQuestModal from "./components/JoinQuestModal";
+import ScoreModal from "./components/ScoreModal";
 import LogoutModal from "./components/LogoutModal";
 import QuestDetail from "./components/QuestDetail";
 import Auth from "./Auth";
@@ -113,6 +114,9 @@ class App extends React.Component {
                             onMounted={() => this.refreshQuestboard()} />
                         <div style={{ width: "100%" }}>
                             <div className="row valign-wrapper" style={{ width: "100%" }}>
+                                <div className="col push-s4">
+                                    <ScoreModal />
+                                </div>
                                 <div className="col push-s4">
                                     <PostQuestModal onPosted={() => this.refreshQuestboard()} />
                                 </div>
